@@ -1,16 +1,16 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: jd_sgmh
+name: jd_cfd
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '10 0 * * *'
+    - cron: '20 0,5,11,16 * * *'
   watch:
     types: started
   repository_dispatch:
-    types: sgmh
+    types: jd_cfd
 jobs:
   build:
 
@@ -40,9 +40,9 @@ jobs:
       - name: '运行【随机延时】'
         run: |
           python3 sjys.py
-      - name: '运行 【京东闪购盲盒】'
-        run: 
-          node jd_sgmh.js
+      - name: '运行 【京喜财富岛】'
+        run: |
+          node jd_cfd2.js
         env:
           JD_COOKIE: ${{ secrets.JD_COOKIE }}
           PUSH_PLUS_TOKEN: ${{ secrets.PUSH_PLUS_TOKEN }}
@@ -58,5 +58,4 @@ jobs:
           TG_USER_ID: ${{ secrets.TG_USER_ID }}
           DD_BOT_TOKEN: ${{ secrets.DD_BOT_TOKEN }}
           DD_BOT_SECRET: ${{ secrets.DD_BOT_SECRET }}
-          JD_USER_AGENT: ${{ secrets.JD_USER_AGENT }}
-          JDSGMH_SHARECODES: ${{ secrets.JDSGMH_SHARECODES }}
+          JDCFD_SHARECODES: 2ACE2A524E87CFE3C6984213642144027EACC88E6938957CDA9984C30EB98575@37E04B22BDF86E3C3AAC578CC486BB8E15991492EABBD6D8458DEFD7D5E94D91@390051DBC6BB271E4868A98560AE67FB4EE1A54F9B3161BCEC7D26DCA1FC2BC4@A7BDD1C9A8337C93A8CC288AA6963AE83E50BFED3BCE97F52B4B9A061A0C0532@DE25E07F269BEFA8FF3988F4BB2BE35804CCF63D68E4ECFA9320E4E81046DC60@ ${{ secrets.JDCFD_SHARECODES }}
