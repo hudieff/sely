@@ -32,7 +32,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
-const randomCount = $.isNode() ? 20 : 5;
+const randomCount = $.isNode() ? 0 : 5;
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 $.tuanList = [];
@@ -51,7 +51,9 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  await getAuthorShareCode('https://raw.githubusercontent.com/hajiuhajiu/jdsign1112/master/jd_zz.json');
+  await getAuthorShareCode('http://qr6pzoy01.hn-bkt.clouddn.com/jd_zz.json');
+  await getAuthorShareCode('https://ghproxy.com/https://raw.githubusercontent.com/1908002701/updateTeam/master/shareCodes/jd_zz.json');
+  await getRandomCode();
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -73,7 +75,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       await main();
     }
   }
-  console.log(`\n\n内部互助 【赚京豆(微信小程序)-瓜分京豆】活动(优先内部账号互助(需内部cookie数量大于${$.assistNum || 4}个)，如有剩余助力次数则给其余`)
+  console.log(`\n\n内部互助 【赚京豆(微信小程序)-瓜分京豆】活动(优先内部账号互助(需内部cookie数量大于${$.assistNum || 4}个)，如有剩余助力次数则给作者lxk0301和随机团助力)\n`)
   for (let i = 0; i < cookiesArr.length; i++) {
     $.canHelp = true
     if (cookiesArr[i]) {
@@ -90,9 +92,9 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       }
       if ($.canHelp) {
         $.authorTuanList = [...$.authorTuanList, ...($.body1 || [])];
-        if ($.authorTuanList.length) console.log(`开始账号内部互助 赚京豆-瓜分京豆 活动，如有剩余则给其余`)
+        if ($.authorTuanList.length) console.log(`开始账号内部互助 赚京豆-瓜分京豆 活动，如有剩余则给作者lxk0301和随机团助力`)
         for (let j = 0; j < $.authorTuanList.length; ++j) {
-          console.log(`账号 ${$.UserName} 开始给wuzhi03 ${$.authorTuanList[j]['assistedPinEncrypted']}助力`)
+          console.log(`账号 ${$.UserName} 开始给作者lxk0301和随机团 ${$.authorTuanList[j]['assistedPinEncrypted']}助力`)
           await helpFriendTuan($.authorTuanList[j])
           if(!$.canHelp) break
           await $.wait(200)
@@ -110,7 +112,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
 
 function showMsg() {
   return new Promise(resolve => {
-    if (message) $.msg($.name, '', `【京东账号${$.index}】${$.nickName}\n${message}`);
+    //if (message) $.msg($.name, '', `【京东账号${$.index}】${$.nickName}\n${message}`);
     resolve()
   })
 }
@@ -721,7 +723,7 @@ function getAuthorShareCode(url) {
   })
 }
 async function getRandomCode() {
-  await $.http.get({url: `https://raw.githubusercontent.com/hajiuhajiu/jdsign1112/master/jd_zz.json`, timeout: 10000}).then(async (resp) => {
+  await $.http.get({url: `https://code.c-hiang.cn/api/v1/jd/zuan/read/${randomCount}`, timeout: 10000}).then(async (resp) => {
     if (resp.statusCode === 200) {
       try {
         let { body } = resp;

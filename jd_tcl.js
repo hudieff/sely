@@ -8,16 +8,16 @@
 ============QuantumultX==============
 [task_local]
 #球队赢好礼
-10 1 * * * https://jdsharedresourcescdn.azureedge.net/jdresource/jd_tcl.js, tag=球队赢好礼, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdyjd.png, enabled=true
+10 1 * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_tcl.js, tag=球队赢好礼, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdyjd.png, enabled=true
 =================Loon===============
 [Script]
-cron "10 1 * * *" script-path=https://jdsharedresourcescdn.azureedge.net/jdresource/jd_tcl.js,tag=球队赢好礼
+cron "10 1 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_tcl.js,tag=球队赢好礼
 =================Surge==============
 [Script]
-球队赢好礼 = type=cron,cronexp="10 1 * * *",wake-system=1,timeout=3600,script-path=https://jdsharedresourcescdn.azureedge.net/jdresource/jd_tcl.js
+球队赢好礼 = type=cron,cronexp="10 1 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_tcl.js
 
 ============小火箭=========
-球队赢好礼 = type=cron,script-path=https://jdsharedresourcescdn.azureedge.net/jdresource/jd_tcl.js, cronexpr="10 1 * * *", timeout=3600, enable=true
+球队赢好礼 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_tcl.js, cronexpr="10 1 * * *", timeout=3600, enable=true
 */
 
 const $ = new Env("球队赢好礼");
@@ -28,8 +28,8 @@ let cookiesArr = [],
   cookie = "",
   message;
 let shareUUID= [
-  'AE38F0914C118493111A116EC86A1CDA06F453804DCBAFB22F6137CDF83B789F76DEBC297C46466047FD3F29C9E6B2340E3006C9E5976ADF7C555C1A05492338DDDA672BF446E2FCC0D1D6B4E52826D1',
-  ''
+  '28D1B0FF74A7A1D4FBE02ED2FA90A9F3C49D80AFF03099EF32C50897D923F6F049336DE54E26AA8F2834B248E6398CB7A755DF4FDAE585EC3E1ABE26F3DD3CFFC956D12974FF00A045D8E31A84FE84C18A8357DE96A1F617B8AC4D64BC24B689',
+  '16C819C7B4D681C695A9D56F0F58F2FC7BD1102FE0B67DE91732CDD3AAE6028C49336DE54E26AA8F2834B248E6398CB7A755DF4FDAE585EC3E1ABE26F3DD3CFFC956D12974FF00A045D8E31A84FE84C18A8357DE96A1F617B8AC4D64BC24B689'
 ]
 let isPurchaseShops = false
 isPurchaseShops = $.isNode() ? (process.env.PURCHASE_SHOPS ? process.env.PURCHASE_SHOPS : isPurchaseShops) : ($.getdata("isPurchaseShops") ? $.getdata("isPurchaseShops") : isPurchaseShops);
@@ -72,6 +72,7 @@ const JD_API_HOST = "https://api.m.jd.com/client.action";
       await main()
     }
   }
+  if ($.isNode()) await notify.sendNotify(`${$.name}`, `${message}\n\n`);
 })()
   .catch((e) => {
     $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
@@ -88,7 +89,7 @@ function showMsg() {
 }
 async function main() {
   await loadAct()
-  await helpFriend(shareUUID[Math.floor(Math.random() * 1)])
+  await helpFriend(shareUUID[Math.floor(Math.random() * 2)])
   await sign()
   await $.wait(1000)
   await getShopList()
@@ -100,7 +101,7 @@ async function main() {
   await draw()
 }
 
-function helpFriend(inviterNickAes = 'AE38F0914C118493111A116EC86A1CDA06F453804DCBAFB22F6137CDF83B789F76DEBC297C46466047FD3F29C9E6B2340E3006C9E5976ADF7C555C1A05492338DDDA672BF446E2FCC0D1D6B4E52826D1') {
+function helpFriend(inviterNickAes = '28D1B0FF74A7A1D4FBE02ED2FA90A9F3C49D80AFF03099EF32C50897D923F6F049336DE54E26AA8F2834B248E6398CB7A755DF4FDAE585EC3E1ABE26F3DD3CFFC956D12974FF00A045D8E31A84FE84C18A8357DE96A1F617B8AC4D64BC24B689') {
   return new Promise((resolve) => {
     $.post(taskUrl('/ql/front/tcl002/helpFriend', `inviterNickAes=${inviterNickAes}`), async (err, resp, data) => {
       try {
@@ -130,7 +131,7 @@ function loadAct() {
         } else {
           //console.log(data)
           let id = data.match(/<input type="hidden" id="buyer_nick_code" name="buyer_nick_code" value="(.*)">/)
-          console.log('好友助力码' + id[1])
+          //console.log('好友助力码' + id[1])
           if (data.indexOf('<div class="yourChoice">') === -1) {
             console.log(`未选择球队，去选择`)
             await chooseTeam()
@@ -149,7 +150,7 @@ function loadAct() {
 
 function chooseTeam() {
   return new Promise((resolve) => {
-    $.post(taskUrl('/ql/front/tcl002/chooseTeam', `team=1`), async (err, resp, data) => {
+    $.post(taskUrl('/ql/front/tcl002/chooseTeam', `team=0`), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
@@ -321,7 +322,7 @@ function draw() {
 function genToken() {
   let config = {
     url: 'https://api.m.jd.com/client.action?functionId=genToken',
-    body: 'uuid=8888888&client=apple&clientVersion=9.5.2&st=1619194107036&sign=8feb09628c3c7a76dd0f2f8a694eaf79&sv=100&body=%7B%22to%22%3A%22https%3A//mpdz-isv.isvjcloud.com/ql/front/tcl002/loadTclAct%3Fid%3DtclTeamAct002%26user_id%3D10299171%26comeResource%3D10%26bizExtString%3DAE38F0914C118493111A116EC86A1CDA06F453804DCBAFB22F6137CDF83B789F76DEBC297C46466047FD3F29C9E6B2340E3006C9E5976ADF7C555C1A05492338DDDA672BF446E2FCC0D1D6B4E52826D1%22%2C%22action%22%3A%22to%22%7D',
+    body: 'uuid=8888888&client=apple&clientVersion=9.5.2&st=1619194107036&sign=8feb09628c3c7a76dd0f2f8a694eaf79&sv=100&body=%7B%22to%22%3A%22https%3A//mpdz-isv.isvjcloud.com/ql/front/tcl002/loadTclAct%3Fid%3DtclTeamAct002%26user_id%3D10299171%26comeResource%3D10%26bizExtString%3D4C8602ED441A318612CD57B4A16EB59EE8AF00C05E1043CAA3E9C10B6DA615700C9463CE3D33670238160230F84D490EE29440149504E2EB1EAD11840F8E2980DDDA672BF446E2FCC0D1D6B4E52826D1%22%2C%22action%22%3A%22to%22%7D',
     headers: {
       Host: "api.m.jd.com",
       accept: "*/*",
@@ -359,12 +360,13 @@ function isvObfuscator() {
     url: 'https://api.m.jd.com/client.action?functionId=isvObfuscator',
     body: 'uuid=8888888&client=apple&clientVersion=9.5.2&st=1619194362037&sign=1f829aab2583c598c1b6b1feeec5fe05&sv=101&body=%7B%22url%22%3A%22https%3A//mpdz-isv.isvjcloud.com/ql/front/tcl002/loadTclAct%3Fid%3DtclTeamAct002%26user_id%3D10299171%26comeResource%3D10%26bizExtString%3D4C8602ED441A318612CD57B4A16EB59EE8AF00C05E1043CAA3E9C10B6DA615700C9463CE3D33670238160230F84D490EE29440149504E2EB1EAD11840F8E2980DDDA672BF446E2FCC0D1D6B4E52826D1%22%2C%22id%22%3A%22%22%7D',
     headers: {
-      'Host': "api.m.jd.com",
-      'accept': "*/*",
+      Host: "api.m.jd.com",
+      accept: "*/*",
       "user-agent": "JD4iPhone/167638 (iPhone; iOS 13.7; Scale/3.00)",
-      "accept-language":"zh-Hans-JP;q=1, en-JP;q=0.9, zh-Hant-TW;q=0.8, ja-JP;q=0.7, en-US;q=0.6",
+      "accept-language":
+        "zh-Hans-JP;q=1, en-JP;q=0.9, zh-Hant-TW;q=0.8, ja-JP;q=0.7, en-US;q=0.6",
       "content-type": "application/x-www-form-urlencoded",
-      'Cookie': cookie,
+      Cookie: cookie,
     },
   };
   return new Promise((resolve) => {
@@ -377,7 +379,7 @@ function isvObfuscator() {
           if (safeGet(data)) {
             data = JSON.parse(data);
             $.token = data["token"];
-            //console.log($.token);
+            // console.log($.token);
           }
         }
       } catch (e) {
@@ -416,12 +418,12 @@ function taskUrl(functionId, body) {
     url: `https://mpdz-isv.isvjcloud.com/${functionId}`,
     body: `userId=10299171&source=01&${body}`,
     headers: {
-      'Accept': "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
       'Cookie': cookie,
       "Accept-Encoding": "gzip, deflate, br",
       "Accept-Language": "zh-cn",
-      'Connection': "keep-alive",
-      'Host': "mpdz-isv.isvjcloud.com",
+      Connection: "keep-alive",
+      Host: "mpdz-isv.isvjcloud.com",
       "User-Agent": 'jdapp;iPhone;9.5.0;14.0.1;370c564f3ec5abbbe14f1f9f46ac73742fd56f58;network/wifi;ADID/4F7F967C-F9D8-41DE-902A-D87F8D45113A;supportApplePay/0;hasUPPay/0;hasOCPay/0;model/iPhone11,8;addressid/33553535;supportBestPay/0;appBuild/167638;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1'
     }
   }
@@ -429,14 +431,14 @@ function taskUrl(functionId, body) {
 
 function taskGetUrl() {
   return {
-    url: `https://mpdz-isv.isvjcloud.com/ql/front/tcl002/loadTclAct?id=tclTeamAct002&user_id=10299171&comeResource=10&bizExtString=AE38F0914C118493111A116EC86A1CDA06F453804DCBAFB22F6137CDF83B789F76DEBC297C46466047FD3F29C9E6B2340E3006C9E5976ADF7C555C1A05492338DDDA672BF446E2FCC0D1D6B4E52826D1`,
+    url: `https://mpdz-isv.isvjcloud.com/ql/front/tcl002/loadTclAct?id=tclTeamAct002&user_id=10299171&comeResource=10&bizExtString=4C8602ED441A318612CD57B4A16EB59EE8AF00C05E1043CAA3E9C10B6DA615700C9463CE3D33670238160230F84D490EE29440149504E2EB1EAD11840F8E2980DDDA672BF446E2FCC0D1D6B4E52826D1`,
     headers: {
       'Host': 'mpdz-isv.isvjcloud.com',
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       'Accept-Language': 'zh-cn',
       'Cookie': cookie,
       "Accept-Encoding": "gzip, deflate, br",
-      'Connection': "keep-alive",
+      Connection: "keep-alive",
       "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")
     }
   }
