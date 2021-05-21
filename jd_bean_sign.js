@@ -268,7 +268,7 @@ function requireConfig() {
     //   NodeSet = err ? '/tmp/CookieSet.json' : NodeSet;
     //   resolve()
     // });
-    //判断是否是云函数环境。原函数跟目录目录没有可写入权限，文件只能放到根目录下虚拟的/temp/文件夹（具有可写入权限）
+    //判断是否是云函数环境。原函数根目录没有可写入权限，文件只能放到根目录下虚拟的/temp/文件夹（具有可写入权限）
     resultPath = process.env.TENCENTCLOUD_RUNENV === 'SCF' ? '/tmp/result.txt' : resultPath;
     JD_DailyBonusPath = process.env.TENCENTCLOUD_RUNENV === 'SCF' ? '/tmp/JD_DailyBonus.js' : JD_DailyBonusPath;
     outPutUrl = process.env.TENCENTCLOUD_RUNENV === 'SCF' ? '/tmp/' : outPutUrl;

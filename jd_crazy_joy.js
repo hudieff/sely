@@ -1,7 +1,7 @@
 /*
 crazyJoy任务
 
-每天运行一次即可lxk20210204
+每天运行一次即可
 
 活动入口：京东APP我的-更多工具-疯狂的JOY
 已支持IOS双京东账号,Node.js支持N个京东账号
@@ -29,13 +29,14 @@ const JD_API_HOST = 'https://api.m.jd.com/';
 
 const notify = $.isNode() ? require('./sendNotify') : '';
 let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
-let helpSelf = true // 循环助力，默认关闭
-let applyJdBean = 2000; //疯狂的JOY京豆兑换，目前最小值为2000京豆，默认为 0 不开启京豆兑换
+let helpSelf = false // 循环助力，默认关闭
+let applyJdBean = 0; //疯狂的JOY京豆兑换，目前最小值为2000京豆，默认为 0 不开启京豆兑换
 let cookiesArr = [], cookie = '', message = '';
 const inviteCodes = [
-'cfV24-2DImG1_DjO3Ma5Mg==@j4aIibI_eAy4YBMMIEVVqQ==@JvTmSdvhYB3M5gCdjPr6Og==@1su8uOiuia1adUQG0vpX9Kt9zd5YaBeE@KmwK04URjVaKP3JyCdAMyg==@lNQiuJmGisgIjiQFolfnLw==@mojISTtxXKKrfc3eWGgXhA==@1PJyxzBgLpyZL2Y0hjZGwQ==@lh8483lT0qJ46lL_aJiA8Kt9zd5YaBeE@FNZ_id1Q0PeryZ-Btt5bvqt9zd5YaBeE@1PJyxzBgLpx1hKJ9pl8ckw==@seuv5_jq3wW1_DjO3Ma5Mg==@r5rbfVxFf7skyH4hfvVRUqt9zd5YaBeE@H0uLBx990UyyE_yZ2n0beg==@fG9YQAm1Gx6BMAhlU04-Cw==@RW5tHjAFH6Pl5hXneH_49A==@93wCzbQ_BiGKbu1T3okb9Q==@NSXYfX-b73NaK5LW0Wm5R_u40ecEj5nZ@mR1PYJ7Q-MCROinFzoPP7A==@V9Gr0JlvQritJrplC80srA==@-B5Ye80PciEFBCOeFM5gJKt9zd5YaBeE@ovVDgUQeEqVI9pTI9X5ZyKt9zd5YaBeE@hlzbCysQpx7vWJd0qO0_q6t9zd5YaBeE','cfV24-2DImG1_DjO3Ma5Mg==@j4aIibI_eAy4YBMMIEVVqQ==@JvTmSdvhYB3M5gCdjPr6Og==@KmwK04URjVaKP3JyCdAMyg==@lh8483lT0qJ46lL_aJiA8Kt9zd5YaBeE@FNZ_id1Q0PeryZ-Btt5bvqt9zd5YaBeE@hlzbCysQpx7vWJd0qO0_q6t9zd5YaBeE@O756mB2n5e9_JmsbaIhrRqt9zd5YaBeE@lNQiuJmGisgIjiQFolfnLw=='
+  'RB2TGQv-YYrXD1_sWVNMKKt9zd5YaBeE@cKja3NFTxrmgD_t9vtIOZKt9zd5YaBeE@RB2TGQv-YYrXD1_sWVNMKKt9zd5YaBeE@qjrufhlydn9sR3EMFhYh9Kt9zd5YaBeE@K3rD96AaJSYDPU2HKSneAw==',
+  'RB2TGQv-YYrXD1_sWVNMKKt9zd5YaBeE@cKja3NFTxrmgD_t9vtIOZKt9zd5YaBeE@RB2TGQv-YYrXD1_sWVNMKKt9zd5YaBeE@qjrufhlydn9sR3EMFhYh9Kt9zd5YaBeE@K3rD96AaJSYDPU2HKSneAw=='
 ];
-const randomCount = $.isNode() ? 10 : 5;
+const randomCount = $.isNode() ? 0 : 5;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -44,13 +45,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {
   };
 } else {
-  let cookiesData = $.getdata('CookiesJD') || "[]";
-  cookiesData = jsonParse(cookiesData);
-  cookiesArr = cookiesData.map(item => item.cookie);
-  cookiesArr.reverse();
-  cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);
-  cookiesArr.reverse();
-  cookiesArr = cookiesArr.filter(item => item !== "" && item !== null && item !== undefined);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 !function (n) {
   "use strict";
@@ -177,7 +172,7 @@ if ($.isNode()) {
   $.selfCodes = []
   for (let i = 0; i < cookiesArr.length; i++) {
     if (i%2===0) {
-      $.nextCode = ["cfV24-2DImG1_DjO3Ma5Mg==", "j4aIibI_eAy4YBMMIEVVqQ=="];
+      $.nextCode = ["EdLPh8A6X5G1iWXu-uPYfA==", "nCQQXQHKGjPCb7jkd8q2U-aCTjZMxL3s"];
       $.nextCode = $.nextCode[randomNumber(0, $.nextCode.length)];
     }
     if (cookiesArr[i]) {
@@ -319,7 +314,7 @@ function doApplyJdBean(bean = 1000) {
     })
   })
 }
-function getUserInfo(code = "cfV24-2DImG1_DjO3Ma5Mg==") {
+function getUserInfo(code = "EdLPh8A6X5G1iWXu-uPYfA==") {
   let body = {"paramData": {"inviter": code}}
   return new Promise(async resolve => {
     $.get(taskUrl('crazyJoy_user_gameState', JSON.stringify(body)), async (err, resp, data) => {
@@ -621,24 +616,28 @@ function getSpecialJoy() {
             data = JSON.parse(data);
             if (data['resultCode'] === '0') {
               if (data.data) {
-                message += '五福汪情况:'
-                for (let item of data['data']) {
-                  if (item['joyId'] === 1003) {
-                    message += `多多JOY(${item['count']}只) `
-                  } else if (item['joyId'] === 1004) {
-                    message += `快乐JOY(${item['count']}只) `
-                  } else if (item['joyId'] === 1005) {
-                    message += `好物JOY(${item['count']}只) `
-                  } else if (item['joyId'] === 1006) {
-                    message += `省钱JOY(${item['count']}只) `
-                  } else if (item['joyId'] === 1007) {
-                    message += `东东JOY(${item['count']}只)`
-                  } else {
-                    message += `暂无`
+                message += '五福汪:'
+                if (data['data'] && data['data'].length > 0) {
+                  for (let item of data['data']) {
+                    if (item['joyId'] === 1003) {
+                      message += `多多JOY(${item['count']}只) `
+                    } else if (item['joyId'] === 1004) {
+                      message += `快乐JOY(${item['count']}只) `
+                    } else if (item['joyId'] === 1005) {
+                      message += `好物JOY(${item['count']}只) `
+                    } else if (item['joyId'] === 1006) {
+                      message += `省钱JOY(${item['count']}只) `
+                    } else if (item['joyId'] === 1007) {
+                      message += `东东JOY(${item['count']}只)`
+                    } else {
+                      message += `暂无`
+                    }
                   }
+                } else {
+                  message += `暂无`;
                 }
                 if (data['data'].length >= 5) {
-                  $.msg($.name, '', `京东账号 ${$.index}${$.nickName}\n恭喜你,已集成五福汪可合成分红JOY了`)
+                  // $.msg($.name, '', `京东账号 ${$.index}${$.nickName}\n恭喜你,已集成五福汪可合成分红JOY了`)
                   if ($.isNode()) await notify.sendNotify(`${$.name} - ${$.index} - ${$.nickName}`, `京东账号 ${$.index}${$.nickName}\n恭喜你,已集成五福汪可合成分红JOY了`);
                 }
               }
@@ -680,7 +679,7 @@ function obtainAward(eventRecordId) {
 function showMsg() {
   return new Promise(async resolve => {
     message += `\n当前信息：${$.bean}京豆，${$.coin}金币`
-    $.msg($.name, '', `京东账号${$.index} ${$.nickName}\n${message}`)
+    // $.msg($.name, '', `京东账号${$.index} ${$.nickName}\n${message}`)
     resolve()
   })
 }
@@ -707,11 +706,11 @@ function taskUrl(functionId, body = '') {
 function readShareCode() {
   console.log(`开始`)
   return new Promise(async resolve => {
-    $.get({url: `https://raw.githubusercontent.com/hajiuhajiu/jdsign1112/master/backUp/crazyjoy.json`, 'timeout': 10111}, (err, resp, data) => {
+    $.get({url: `https://code.chiang.fun/api/v1/jd/jdcrazyjoy/read/${randomCount}/`, 'timeout': 10000}, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} API请求失败11111，请检查网路重试`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
           if (data) {
             console.log(`随机取${randomCount}个码放到您固定的互助码后面(不影响已有固定互助)`)
@@ -822,7 +821,11 @@ function TotalBean() {
               $.isLogin = false; //cookie过期
               return
             }
-            $.nickName = data['base'].nickname;
+            if (data['retcode'] === 0) {
+              $.nickName = (data['base'] && data['base'].nickname) || $.UserName;
+            } else {
+              $.nickName = $.UserName
+            }
           } else {
             console.log(`京东服务器返回空数据`)
           }
